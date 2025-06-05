@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: recipe-ai-db
+    environment:
+      POSTGRES_DB: recipe_ai
+      POSTGRES_USER: recipe_user
+      POSTGRES_PASSWORD: recipe_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - recipe-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: recipe-ai-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - recipe-network
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: recipe-ai-backend
+    ports:
+      - "8080:8080"
+      - "5005:5005"  # Debug port
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=recipe_ai
+      - DB_USER=recipe_user
+      - DB_PASSWORD=recipe_pass
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./backend:/app
+      - /app/target
+      - maven_cache:/root/.m2
+    networks:
+      - recipe-network
+
+  # Svelte Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: recipe-ai-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8080/api/v1
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - recipe-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  maven_cache:
+
+networks:
+  recipe-network:
+    driver: bridge

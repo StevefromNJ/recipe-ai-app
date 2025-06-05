@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    platform: linux/amd64  # Ensures compatibility with M1/M2 Macs
+    environment:
+      - SPRING_DEVTOOLS_RESTART_ENABLED=true
+      - SPRING_JPA_SHOW_SQL=true
+    volumes:
+      - ./backend:/app:cached  # Mac-optimized volume mounting
+      - maven_cache:/root/.m2:cached
+
+  frontend:
+    platform: linux/amd64  # Ensures compatibility with M1/M2 Macs
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./frontend:/app:cached  # Mac-optimized volume mounting
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
+
+  db:
+    platform: linux/amd64  # Database compatibility
+    
+  redis:
+    platform: linux/amd64  # Redis compatibility
+
+volumes:
+  maven_cache:

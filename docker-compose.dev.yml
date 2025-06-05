@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  backend:
+    environment:
+      - SPRING_DEVTOOLS_RESTART_ENABLED=true
+      - SPRING_JPA_SHOW_SQL=true
+    volumes:
+      - ./backend:/app
+      - maven_cache:/root/.m2
+
+  frontend:
+    environment:
+      - NODE_ENV=development
+    command: npm run dev -- --host 0.0.0.0
+
+volumes:
+  maven_cache:

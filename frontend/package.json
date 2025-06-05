@@ -1,0 +1,29 @@
+{
+	"name": "recipe-ai-frontend",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite dev",
+		"dev:host": "vite dev --host 0.0.0.0",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "eslint ."
+	},
+	"dependencies": {
+		"@sveltejs/kit": "^1.30.4",
+		"svelte": "^4.0.5"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^2.1.1",
+		"@sveltejs/vite-plugin-svelte": "^2.4.2",
+		"@types/node": "^20.17.57",
+		"concurrently": "^8.2.2",
+		"svelte-check": "^3.4.3",
+		"typescript": "^5.0.0",
+		"vite": "^4.4.2",
+		"vitest": "^0.32.2"
+	},
+	"type": "module"
+}
