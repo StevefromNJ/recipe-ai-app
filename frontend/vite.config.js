@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  // example config — adjust as needed
   root: './src',
+  publicDir: '../public', // adjust path relative to root
   server: {
     port: 5173
   }
 })
+
